@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "file-saver": "^2.0.5",
+    "ics": "^3.1.0",
+    "react": "^18.2.0",
+    "require": "^2.4.20"
+  }
+}
