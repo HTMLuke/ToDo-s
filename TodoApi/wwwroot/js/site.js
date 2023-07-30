@@ -67,8 +67,8 @@ function addItem() {
       addNameTextbox.value = '';      //clear input textbox
     })
     .catch(error => alert("Error: Unable to add item. No name"));    //if something went wrong error
-    addform = document.getElementById("addtodo");     // get html modal dialog
-    addform.style.display = "none";       //hide modal dialogue
+  addform = document.getElementById("addtodo");     // get html modal dialog
+  addform.style.display = "none";       //hide modal dialogue
 }
 
 function deleteItem(id) {
@@ -80,7 +80,7 @@ function deleteItem(id) {
 }
 
 function displayEditForm(id) {
-  el = document.getElementById("example");      //get html edit modal dialog
+  editformdis = document.getElementById("editmodal");      //get html edit modal dialog
   const item = todos.find(item => item.id === id);      //find the right item for editing
   dateusable = item.year + "-" + item.month + "-" + item.day;      //set date variables in usable format
 
@@ -88,58 +88,64 @@ function displayEditForm(id) {
   document.getElementById('edit-name').value = item.name;     //set value of text box
   document.getElementById('edit-id').value = item.id;     //set item id
   document.getElementById('edit-isComplete').checked = item.isComplete;     //set is completed or not
-  document.getElementById('example').style.display = 'block';     //display modal dialog form
+  editformdis.style.display = 'block';     //display modal dialog form
 }
 
 function closeaddbox() {
   addbox = document.getElementById("addtodo");   //get html add modal dialog
   addbox.style.display = "none";      //hide modal dialog form
-  var fehlerdivdate4 = document.getElementById('dateerroradd');
-  fehlerdivdate4.textContent = "";
-  error = document.getElementById('eingabefehler');
-  error.textContent = "";
+  var fehlerdivdate4 = document.getElementById('dateerroradd');     //error text date box
+  fehlerdivdate4.textContent = "";      //clear error text 
+  error = document.getElementById('eingabefehler');     //error text input box
+  error.textContent = "";     //clear error text
+  textboxadd = document.getElementById('add-name');
+  textboxadd.textContent = "";        //clear input box
 }
 
 function closebox() {
   var fehlerdiv2 = document.getElementById('editerror');
-  fehlerdiv2.textContent = "";
+  fehlerdiv2.textContent = "";      //clear error text 
   var fehlerdivdate3 = document.getElementById('dateerroredit');
-  fehlerdivdate3.textContent = "";
-  el = document.getElementById("example");
-  el.style.display = "none";
+  fehlerdivdate3.textContent = "";        //clear error text 
+  editform = document.getElementById("editmodal");
+  editform.style.display = "none";      //hide edit modal dialog
 
 }
 function updateItem() {
-  const itemId = document.getElementById('edit-id').value;
-  const er = document.getElementById('edit-name');
-  if (er.value == null || er.value.trim() == "") {
+  const itemId = document.getElementById('edit-id').value;    //get item id
+  const edittext = document.getElementById('edit-name');
+  if (edittext.value == null || edittext.value.trim() == "") {        //security check if text box is emty
     var fehlerdiv = document.getElementById('editerror');
     fehlerdiv.textContent = "Please enter a Name";
     return;
   } else {
-    var fehlerdiv = document.getElementById('editerror');
+    var fehlerdiv = document.getElementById('editerror');     //else delete error text
     fehlerdiv.textContent = "";
   }
+
   datebox2 = document.getElementById("dateboxedit");
-  if (datebox2.value == null || datebox2.value == "") {
+  if (datebox2.value == null || datebox2.value == "") {     //security check if date box is emty
     var fehlerdivdate3 = document.getElementById('dateerroredit');
     fehlerdivdate3.textContent = "Please enter a Date";
     return;
   } else {
-    var fehlerdivdate3 = document.getElementById('dateerroredit');
+    var fehlerdivdate3 = document.getElementById('dateerroredit');      //else delete error text
     fehlerdivdate3.textContent = "";
   }
-  var dateboxrow = datebox2.value;
-  var dateboxvalue = dateboxrow.split("-")
+
+  var dateboxrow = datebox2.value;      //read date box value
+  var dateboxendvalue = dateboxrow.split("-")     //split value for working
+
+  //creat item for sending
   const item = {
     id: (itemId),
     isComplete: document.getElementById('edit-isComplete').checked,
-    name: document.getElementById('edit-name').value.trim(),
-    day: dateboxvalue[2], // parseInt(stSplit[1],10)-1, parseInt(stSplit[0],10);
-    month: dateboxvalue[1],
-    year: dateboxvalue[0]
+    name: edittext.value.trim(),
+    day: dateboxendvalue[2],
+    month: dateboxendvalue[1],
+    year: dateboxendvalue[0]
   };
-
+  //send item to server
   fetch(`${uri}/${itemId}`, {
     method: 'PUT',
     headers: {
@@ -148,72 +154,51 @@ function updateItem() {
     },
     body: JSON.stringify(item)
   })
-    .then(() => getItems())
-    //.catch(error => console.error('Unable to update item.', error));
+    .then(() => getItems())     //reload items
     .catch(error => alert("Error: Unable to add item. No name"));
-  el = document.getElementById("example");
-  el.style.display = "none";
+
+  //hide edit modal dialog form
+  editform = document.getElementById("editmodal");
+  editform.style.display = "none";
+
+  //clear error message
   var fehlerdiv2 = document.getElementById('editerror');
   fehlerdiv2.textContent = "";
-  closeInput();
-
-  return false;
-}
-
-function closeInput() {
-  document.getElementById('example').style.display = 'none';
 }
 
 function _displayCount(itemCount) {
+  //count items and display
   const name = (itemCount === 1) ? 'to-do' : 'to-dos';
-
   document.getElementById('counter').innerText = `${itemCount} ${name}`;
 }
-function triggerics() {
-  fetch(uri)
-    .then(response => response.json())
-    .then(data => _genicserall(data))
-    .catch(error => console.error('Unable to get items.', error));
-}
+
 
 function closeerrorbox() {
   errorbox = document.getElementById("erroricsall");
   errorbox.style.display = "none";
 }
 
+
 function getItemsics() {
+  //get current items and trigger ics function 
   fetch(uri)
     .then(response => response.json())
-    .then(data => _genicserall(data))
+    .then(data => _genicsallitems(data))     //trigger ics function 
     .catch(error => console.error('Unable to get items.', error));
-
 }
-function _genicserall(data) {
-  //  var data;
+function _genicsallitems(data) {
 
+  // if no data display error dialog
   if (data == null || data.length == 0) {
     errorbox = document.getElementById("erroricsall");
     errorbox.style.display = "block";
     return;
   }
 
-  /*eventName1 = data1.item[0].name;
-  day0 = data1[0].day
-  month0 = data1[0].month
-  year0 = data1[0].year*/
-
-  // date5 = year0 + month0 + day0 + "T" + "120000Z";
-  //name of file to download as
-  fileName = 'my-complete-ToDo.ics';
-
-  //start time of event in iCal
-  // dateStart = date5;
-
-  //end time of event in iCal
-  //  dateEnd = date5;
+  //set file name
+  fileName = 'all_ToDos.ics';
 
 
-  //helper functions
 
   //iso date for ical formats
   this._isofix = function (d) {
@@ -254,6 +239,7 @@ function _genicserall(data) {
     }
   }
 
+  //creat ics item array
   var now = new Date();
   var ics_lines = [
     "BEGIN:VCALENDAR",
@@ -262,8 +248,9 @@ function _genicserall(data) {
     "METHOD:PUBLISH",
   ];
 
-
+  // add each item
   data.forEach(item => {
+    //prepare variables and read values
     summary = "SUMMARY:" + item.name;
     decrip = "DESCRIPTION:" + item.name;
     day0 = item.day;
@@ -274,7 +261,11 @@ function _genicserall(data) {
     dtend = "DTEND:" + dateics;
     dtstamp = "DTSTAMP:" + dateics;
     uide = "UID:event-" + now.getTime() + "@addroid.com";
+
+    //add item to array
     ics_lines.push("BEGIN:VEVENT", uide, summary, decrip, "CLASS: PRIVATE", dtstart, dtend, dtstamp, "END:VEVENT");
+
+    //set alls variable to null
     summary = null;
     decrip = null;
     day0 = null;
@@ -287,11 +278,14 @@ function _genicserall(data) {
     uide = null;
     ics_linesitem = null;
   });
+  //add end of ics
   ics_lines.push("END:VCALENDAR");
+
+  //configure the file for calender
+  var dlurl = 'data:text/calendar;base64,' + btoa(ics_lines.join('\r\n'));
   var dlurl = 'data:text/calendar;base64,' + btoa(ics_lines.join('\r\n'));
 
-  var dlurl = 'data:text/calendar;base64,' + btoa(ics_lines.join('\r\n'));
-
+  //try to save file
   try {
     this._save(dlurl);
   } catch (e) {
@@ -300,22 +294,23 @@ function _genicserall(data) {
 }
 function genradeics(_name, _day, _month, _year) {
 
-
+  //creat useable time variable
   date2 = _year + _month + _day + "T" + "120000Z";
-  //name of event in iCal
+
+  //name of todo
   eventName = _name;
 
   //name of file to download as
   fileName = 'my-ToDo.ics';
 
-  //start time of event in iCal
+  //start time of todo
   dateStart = date2;
 
-  //end time of event in iCal
+  //end time of todo
   dateEnd = date2;
 
 
-
+  //zero padding for data fixes
   this._zp = function (s) { return ("0" + s).slice(-2); }
   this._save = function (fileURL) {
     if (!window.ActiveXObject) {
@@ -343,6 +338,7 @@ function genradeics(_name, _day, _month, _year) {
     }
   }
 
+  //creat ics item array
   var now = new Date();
   var ics_lines2 = [
     "BEGIN:VCALENDAR",
@@ -361,10 +357,11 @@ function genradeics(_name, _day, _month, _year) {
     "END:VCALENDAR"
   ];
 
+  //configure the file for calender
+  var dlurl = 'data:text/calendar;base64,' + btoa(ics_lines2.join('\r\n'));
   var dlurl = 'data:text/calendar;base64,' + btoa(ics_lines2.join('\r\n'));
 
-  var dlurl = 'data:text/calendar;base64,' + btoa(ics_lines2.join('\r\n'));
-
+  //try to save file
   try {
     this._save(dlurl);
   } catch (e) {
@@ -375,19 +372,23 @@ function genradeics(_name, _day, _month, _year) {
 }
 
 
-
 function updatecheckbox(_id, _isComplete, _name, _day, _month, _year) {
 
-  let chkd = (_isComplete === "true");
+  //read variable 
+  let completedvar = (_isComplete === "true");
+
+  //creat item for update
   var _item = {
     id: _id,
-    isComplete: chkd,
+    isComplete: completedvar,
     name: _name,
     day: _day,
     month: _month,
     year: _year
 
   };
+
+  //send updated item to server
   fetch(`${uri}/${_id}`, {
     method: 'PUT',
     headers: {
@@ -396,76 +397,89 @@ function updatecheckbox(_id, _isComplete, _name, _day, _month, _year) {
     },
     body: JSON.stringify(_item)
   })
-    .then(() => getItems())
+    .then(() => getItems())     //reload items
     .catch(error => console.error('Unable to update item.', error));
 }
 
 function _displayItems(data) {
   const tBody = document.getElementById('todos');
-  tBody.innerHTML = '';
+  tBody.innerHTML = '';     //clear body
 
-  _displayCount(data.length);
+  _displayCount(data.length);     //send the counted items to function
 
-  const button = document.createElement('button');
-  data1 = data;
+  const button = document.createElement('button');      //create html button element
+  //configurate html items
   data.forEach(item => {
+    //is completed checkbox
     let isCompleteCheckbox = document.createElement('input');
-    isCompleteCheckbox.type = 'checkbox';
-    isCompleteCheckbox.setAttribute("class", "form-check-input checkbox");
-    isCompleteCheckbox.disabled = false;
-    isCompleteCheckbox.id = "check";
-    isCompleteCheckbox.checked = item.isComplete;
-    //var chk = document.getElementById('check');
-    isCompleteCheckbox.setAttribute('onchange', 'updatecheckbox(\'' + item.id + '\',\'' + !(item.isComplete) + '\',\'' + item.name + '\', \'' + item.day + '\', \'' + item.month + '\',\'' + item.year + '\',)');
-    let editButton = button.cloneNode(false);
-    editButton.innerHTML = "&#9998;";
-    editButton.setAttribute('onclick', 'displayEditForm(\'' + item.id + '\')');
-    editButton.setAttribute('title', 'Edit');
-    editButton.setAttribute("type", "button");
-    editButton.setAttribute("class", "btn buttonslight btn-light");
+    isCompleteCheckbox.type = 'checkbox';     //configure box as checkbox
+    isCompleteCheckbox.setAttribute("class", "form-check-input checkbox");      //set class
+    isCompleteCheckbox.disabled = false;      //enable check box
+    isCompleteCheckbox.id = "check";      //set id of checkbox
+    isCompleteCheckbox.checked = item.isComplete;       //set status
+    isCompleteCheckbox.setAttribute('onchange', 'updatecheckbox(\'' + item.id + '\',\'' + !(item.isComplete) + '\',\'' + item.name + '\', \'' + item.day + '\', \'' + item.month + '\',\'' + item.year + '\',)');     //set onchange event
 
+    //edit button
+    let editButton = button.cloneNode(false);
+    editButton.innerHTML = "&#9998;";       //set style icon
+    editButton.setAttribute('onclick', 'displayEditForm(\'' + item.id + '\')');     //set onclick event
+    editButton.setAttribute('title', 'Edit');     //set title
+    editButton.setAttribute("type", "button");      //set type as button
+    editButton.setAttribute("class", "btn buttonslight btn-light");       //set class
+    //delete button
     let deleteButton = button.cloneNode(false);
-    deleteButton.innerHTML = "&#x1F5D1;";
-    deleteButton.setAttribute('onclick', 'deleteItem(\'' + item.id + '\')');
-    deleteButton.setAttribute("type", "button");
-    deleteButton.setAttribute('title', 'Delete')
-    deleteButton.setAttribute("class", "btn buttonslight btn-light");
+    deleteButton.innerHTML = "&#x1F5D1;";     //set style icon
+    deleteButton.setAttribute('onclick', 'deleteItem(\'' + item.id + '\')');      //set onclick event
+    deleteButton.setAttribute('title', 'Delete')      //set title
+    deleteButton.setAttribute("type", "button");      //set type as button
+    deleteButton.setAttribute("class", "btn buttonslight btn-light");     //set class
+
+    //export button
     let expotbutton = button.cloneNode(false);
-    expotbutton.innerHTML = "&#128197;";
-    expotbutton.setAttribute('onclick', 'genradeics(\'' + item.name + '\', \'' + item.day + '\', \'' + item.month + '\',\'' + item.year + '\',)');
-    expotbutton.setAttribute('type', 'button');
-    expotbutton.setAttribute('title', 'Export for Calender')
-    expotbutton.setAttribute("class", "btn buttonslight btn-light");
+    expotbutton.innerHTML = "&#128197;";      //set style icon
+    expotbutton.setAttribute('onclick', 'genradeics(\'' + item.name + '\', \'' + item.day + '\', \'' + item.month + '\',\'' + item.year + '\',)');      //set onclick event
+    expotbutton.setAttribute('title', 'Export for Calender')      //set title
+    expotbutton.setAttribute('type', 'button');     //set type as button
+    expotbutton.setAttribute("class", "btn buttonslight btn-light");      //set class
+
+    //set date
     date = item.day;
     year = item.year;
     month = item.month;
-    date2 = date + "." + month + "." + year;
+    date2 = date + "." + month + "." + year;      //set date tu useful variable
 
-    let tr = tBody.insertRow();
+    //insert item to table
+    let tr = tBody.insertRow();     //insert new row
 
+    //insert isComplete checkbox to row
     let td1 = tr.insertCell(0);
     td1.appendChild(isCompleteCheckbox);
     td1.setAttribute("class", "text-center");
+
+    //insert todo name to row 
     let td2 = tr.insertCell(1);
     let textNode = document.createTextNode(item.name);
     td2.appendChild(textNode);
 
+    //insert date to row
     let td5 = tr.insertCell(2);
     let textNode2 = document.createTextNode(date2);
     td5.appendChild(textNode2)
 
+    //insert editbutton to row
     let td3 = tr.insertCell(3);
     td3.appendChild(editButton);
 
+    //insert deletebutton to row
     let td4 = tr.insertCell(4);
     td4.appendChild(deleteButton);
     td4.setAttribute("style", "border-left-style: hidden;");
 
+    //insert exportbutton to row
     let td6 = tr.insertCell(5);
     td6.appendChild(expotbutton);
     td6.setAttribute("style", "border-left-style: hidden;");
   });
-
-  todos = data;
+  todos = data;     //copy data in new variable
 }
 

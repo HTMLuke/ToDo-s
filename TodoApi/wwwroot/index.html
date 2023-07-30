@@ -17,10 +17,8 @@
   </div>
 
   <button class="btn1 btn btn-primary ms-3 align-middle" title="Add" id="addbutton1" onclick="displayaddform()">+</button>
-  <button class="btn1 btn btn-primary ms-3 align-middle" title="Export All for Calender" id="icsall"
-    onclick="getItemsics()">&#128197;</button>
+  <button class="btn1 btn btn-primary ms-3 align-middle" title="Export All for Calender" id="icsall" onclick="getItemsics()">&#128197;</button>
 
-  <!-- <button class="btn1 btn btn-primary ms-3 align-middle" title="Add2" id="addbutton2" onclick="triggerics()">&#43;</button> -->
   <div id="addtodo" class="modal" style="display: none; visibility: visible;">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -46,7 +44,7 @@
     </div>
   </div>
   <div class="ms-3 mt-2 mb-2" id="counter"></div>
-  <div id="example" class="modal" style="display: none; visibility: visible;">
+  <div id="editmodal" class="modal" style="display: none; visibility: visible;">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -91,7 +89,7 @@
 
 
   <div class="table-wrapper-scroll-y my-custom-scrollbar">
-    <table class=" table table-light table-striped table-hover table-bordered w-75 align-middle ms-3 mt-3">
+    <table class=" table table-light table-striped table-hover table-bordered w-75 align-middle testtable">
       <thead>
         <tr>
           <th class="align-items-center" style="width:5%;" scope="col">Is Complete?</th>
@@ -110,9 +108,11 @@
 
 
     <script src="js/site.js" asp-append-version="true"></script>
+    
     <script type="text/javascript">
       getItems();
     </script>
+
 </body>
 
 </html>
