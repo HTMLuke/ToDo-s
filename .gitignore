@@ -1,4 +1,12 @@
 TodoApi/obj/Debug/net7.0/project.razor.json
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.history/
+*.vsix
 .vs/webprojekt1/v17/.wsuo
 .vs/webprojekt1/v17/workspaceFileList.bin
 .vs/slnx.sqlite
