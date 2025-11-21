@@ -1,4 +1,4 @@
-# 📌 Project Name
+# 📌 To Do API
 
 A learning Project for learning how to develop a c# REST API with Mongo DB. 
 
